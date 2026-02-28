@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 const userSchema = new mongoose.Schema(
   {
     // 🔑 Basic Info
-    fullName: {
+    fullname: {
       type: String,
       required: true,
       trim: true,
@@ -27,6 +27,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       minlength: 6,
       select: false, // 🔥 don't return by default
+      required: function () {
+        return !this.googleId;
+      },
     },
 
     googleId: {
@@ -71,7 +74,11 @@ const userSchema = new mongoose.Schema(
     // 📱 Contact (optional but useful)
     phone: {
       type: String,
-      match: [/^\d{10}$/, 'Invalid phone number'],
+      unique: true,
+      sparse: true,
+      required: function () {
+        return !this.googleId;
+      },
     },
 
     // 🏠 Hostel Mapping
@@ -96,6 +103,48 @@ const userSchema = new mongoose.Schema(
     // 📸 Optional profile
     avatar: {
       type: String,
+    },
+    // 🎓 Student / Hosteler Info
+    roomNo: {
+      type: String,
+      trim: true,
+    },
+
+    college: {
+      type: String,
+      trim: true,
+      maxlength: 150,
+    },
+
+    course: {
+      type: String,
+      trim: true,
+    },
+
+    year: {
+      type: Number, // e.g., 1, 2, 3, 4
+      min: 1,
+      max: 10,
+    },
+
+    guardianName: {
+      type: String,
+      trim: true,
+    },
+
+    guardianPhone: {
+      type: String,
+      trim: true,
+    },
+
+    address: {
+      type: String,
+      trim: true,
+    },
+
+    emergencyContact: {
+      type: String,
+      trim: true,
     },
   },
   {
