@@ -1,8 +1,23 @@
 import { useState } from "react";
 import { Mail, Lock } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -11,61 +26,68 @@ export default function Login() {
     setTimeout(() => {
       setLoading(false);
       alert("Login Successful");
+      console.log(formData);
     }, 2000);
   };
 
   const handleGoogleLogin = () => {
-    setLoading(true);
+    setGoogleLoading(true);
     setTimeout(() => {
-      setLoading(false);
+      setGoogleLoading(false);
       alert("Google Login Successful");
     }, 2000);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0f0f0f] px-6">
+    <div className="min-h-screen md:bg-[#f5f5f5] flex items-center justify-center ">
 
-      <div className="w-full max-w-md p-10 rounded-3xl backdrop-blur-xl bg-white/5 border border-white/10 shadow-2xl">
+      <div className="w-full max-w-md bg-white md:shadow-sm  p-6">
 
         {/* Brand */}
-        <div className="mb-10 text-center">
-          <h1 className="text-3xl font-semibold tracking-wide text-white">
+        <div className="mb-8 text-center">
+          <h1 className="text-2xl font-semibold text-black">
             Kaveri Living
           </h1>
-          <p className="text-sm text-gray-400 mt-2">
-            Premium Hostel Experience
+          <p className="text-sm text-gray-500 mt-1">
+            Student Hostel Login
           </p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-8">
+        <form onSubmit={handleLogin} className="space-y-6">
 
           {/* Email */}
           <div className="relative">
-            <Mail className="absolute left-0 top-2 text-gray-500" size={18} />
+            <Mail className="absolute left-0 top-3 text-gray-400" size={18} />
             <input
               type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               required
               placeholder="Email Address"
-              className="w-full bg-transparent border-b border-gray-600 focus:border-white pl-7 pb-2 text-white placeholder-gray-500 focus:outline-none transition-all duration-300"
+              className="w-full border-b border-gray-300 focus:border-black pl-7 py-2 text-sm focus:outline-none"
             />
           </div>
 
           {/* Password */}
           <div className="relative">
-            <Lock className="absolute left-0 top-2 text-gray-500" size={18} />
+            <Lock className="absolute left-0 top-3 text-gray-400" size={18} />
             <input
               type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
               required
               placeholder="Password"
-              className="w-full bg-transparent border-b border-gray-600 focus:border-white pl-7 pb-2 text-white placeholder-gray-500 focus:outline-none transition-all duration-300"
+              className="w-full border-b border-gray-300 focus:border-black pl-7 py-2 text-sm focus:outline-none"
             />
           </div>
 
           {/* Forgot Password */}
           <div className="text-right">
             <a
-              href="#"
-              className="text-sm text-gray-400 hover:text-white transition"
+              href="/forgot-password"
+              className="text-sm text-gray-600"
             >
               Forgot Password?
             </a>
@@ -75,30 +97,30 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-full border border-white/20 text-white tracking-wide transition-all duration-300 hover:bg-white hover:text-black flex items-center justify-center"
+            className="w-full py-3 bg-black text-white text-sm font-medium"
           >
             {loading ? (
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-5 h-5 border-2 rounded-full border-white border-t-transparent animate-spin mx-auto"></div>
             ) : (
               "Sign In"
             )}
           </button>
 
           {/* Divider */}
-          <div className="flex items-center gap-4">
-            <div className="flex-1 h-px bg-white/10"></div>
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-px bg-gray-300"></div>
             <span className="text-xs text-gray-500">OR</span>
-            <div className="flex-1 h-px bg-white/10"></div>
+            <div className="flex-1 h-px bg-gray-300"></div>
           </div>
 
           {/* Google Login */}
-          <button
+           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full py-3 rounded-full border border-white/20 text-white tracking-wide transition-all duration-300 hover:bg-white hover:text-black flex items-center justify-center gap-2"
+            className="w-full py-3 border border-gray-300 text-sm font-medium flex items-center justify-center gap-2"
           >
-            {loading ? (
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            {googleLoading ? (
+              <div className="w-5 h-5 border-2 rounded-full border-black border-t-transparent animate-spin"></div>
             ) : (
               <>
                 <svg width="18" height="18" viewBox="0 0 48 48">
@@ -107,15 +129,23 @@ export default function Login() {
                   <path fill="#4A90E2" d="M10.64 28.65c-1.09-3.22-1.09-6.73 0-9.95l-8-6.21C.86 16.13 0 19.96 0 24s.86 7.87 2.64 11.51l8-6.86z"/>
                   <path fill="#FBBC05" d="M24 48c6.35 0 11.91-2.09 15.88-5.68l-7.26-5.64c-2.02 1.35-4.6 2.14-8.62 2.14-6.17 0-11.33-3.84-13.36-9.15l-8 6.21C6.63 42.52 14.63 48 24 48z"/>
                 </svg>
-                Sign in with Google
+                Continue with Google
               </>
             )}
           </button>
 
+          {/* Register */}
+          <div className="text-center text-sm text-gray-600 pt-4">
+            Don’t have an account?{" "}
+            <NavLink to="/auth/register" className="text-black">
+              Register
+            </NavLink>
+          </div>
+
         </form>
 
-        <div className="mt-8 text-center text-xs text-gray-500">
-          © 2026 Kaveri Living. All rights reserved.
+        <div className="mt-6 text-center text-xs text-gray-400">
+          © 2026 Kaveri Living
         </div>
 
       </div>
