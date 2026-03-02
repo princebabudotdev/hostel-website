@@ -5,7 +5,7 @@ const registerService = async (userdata) => {
   const existUser = await authDao.findByEmail(userdata.email);
 
   if (existUser) {
-    throw new ApiError(404, 'User already registered');
+    throw new ApiError(409, 'User already registered');
   }
 
   const newUser = await authDao.createUser({
@@ -36,15 +36,10 @@ const loginService = async ({ email, password }) => {
   return user;
 };
 
-const forgotPasswordService = async ({ email, password }) => {
-  
-};
-
-
-
+const forgotPasswordService = async ({ email, password }) => {};
 
 export default {
   registerService,
   loginService,
-  forgotPasswordService
+  forgotPasswordService,
 };

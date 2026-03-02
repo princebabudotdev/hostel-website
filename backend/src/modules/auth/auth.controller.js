@@ -91,6 +91,8 @@ const googleCallback = asyncHandler(async (req, res) => {
     maxAge: tokenExpirySecs * 1000, // Convert to milliseconds for cookie maxAge
   });
 
+  res.redirect("http://localhost:5173/profile")
+
   res.status(201).json({
     sucess: true,
     message: 'User login sucessfully',
@@ -99,9 +101,17 @@ const googleCallback = asyncHandler(async (req, res) => {
   });
 });
 
+const logout = asyncHandler(async (req , res) => {
+  res.clearCookie("token");
+  res.status(200).json({
+    message:"Logout sucessfully"
+  })
+})
+
 export default {
   register,
   login,
   forgotPassword,
   googleCallback,
+  logout
 };

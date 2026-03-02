@@ -1,42 +1,124 @@
-import { useState } from "react";
-import { User, Mail, Phone, MapPin, Home, CreditCard } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import axiosInstance from "../../config/axios..config";
+import { User, Phone, MapPin, Home } from "lucide-react";
+import UseAuth from "../../context/auth/UseAuth";
 
 export default function EditProfile() {
+  const { user } = UseAuth();
+  const fileInputRef = useRef(null);
+
   const [loading, setLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [imageLoading, setImageLoading] = useState(false);
+
+  const [imagePreview, setImagePreview] = useState("");
 
   const [form, setForm] = useState({
-    name: "Rahul Sharma",
-    email: "rahul@gmail.com",
-    phone: "+91 9876543210",
-    address: "Bangalore, Karnataka",
-    room: "A-203",
-    block: "Block A",
-    messPlan: "Veg Monthly",
-    feeStatus: "Paid",
+    fullname: "",
+    phone: "",
+    roomNo: "",
+    college: "",
+    course: "",
+    year: "",
+    address: "",
+    emergencyContact: "",
   });
 
+  // 🔁 Sync user
+  useEffect(() => {
+    if (user) {
+      setForm({
+        fullname: user.fullname || "",
+        phone: user.phone || "",
+        roomNo: user.roomNo || "",
+        college: user.college || "",
+        course: user.course || "",
+        year: user.year || "",
+        address: user.address || "",
+        emergencyContact: user.emergencyContact || "",
+      });
+
+      setImagePreview(user.avatar || "");
+    }
+  }, [user]);
+
+  // 🧠 Handle input
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const fakeSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setProgress(0);
+  // 🖼️ Upload avatar (separate API)
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-    let value = 0;
-    const interval = setInterval(() => {
-      value += 10;
-      setProgress(value);
-      if (value >= 100) {
-        clearInterval(interval);
-        setTimeout(() => {
-          setLoading(false);
-          alert("Profile Updated Successfully ✅");
-        }, 500);
+    if (!file.type.startsWith("image/")) {
+      alert("Only image allowed");
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Max 2MB allowed");
+      return;
+    }
+
+    // preview
+    const previewURL = URL.createObjectURL(file);
+    setImagePreview(previewURL);
+
+    try {
+      setImageLoading(true);
+
+      const formData = new FormData();
+      formData.append("avatar", file);
+
+      const res = await axiosInstance.patch(
+        "/api/v1/user/update/avatar",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      if (res.data?.avatar) {
+        setImagePreview(res.data.avatar);
       }
-    }, 200);
+
+    } catch (err) {
+      console.error(err.response || err);
+      alert("Image upload failed ❌");
+    } finally {
+      setImageLoading(false);
+    }
+  };
+
+  // 🚀 Submit profile (only allowed fields)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+
+      const payload = {
+        fullname: form.fullname,
+        phone: form.phone,
+        roomNo: form.roomNo,
+        college: form.college,
+        course: form.course,
+        year: form.year,
+        address: form.address,
+        emergencyContact: form.emergencyContact,
+      };
+
+      await axiosInstance.patch("/api/v1/user/update", payload);
+
+      alert("Profile updated ✅");
+
+    } catch (err) {
+      console.error(err.response.data || err);
+      alert("Update failed ❌");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -49,49 +131,63 @@ export default function EditProfile() {
 
       <div className="md:max-w-3xl md:mx-auto md:p-6 space-y-6">
 
-        {/* PROFILE PICTURE SECTION */}
-        <div className="bg-white border border-gray-200 p-5 md:rounded-2xl rounded-none">
+        {/* PROFILE IMAGE */}
+        <div className="bg-white border border-gray-200 p-5 md:rounded-2xl">
           <h2 className="text-sm font-semibold mb-4">Profile Picture</h2>
 
           <div className="flex flex-col md:flex-row items-center gap-5">
-            <div className="w-24 h-24 bg-gray-300 flex items-center justify-center text-xl font-semibold">
-              R
-            </div>
 
-            <div className="flex flex-col gap-2 w-full">
-              <input
-                type="file"
-                className="text-sm"
-              />
+            {/* Avatar */}
+            <div
+              onClick={() => fileInputRef.current.click()}
+              className="w-24 h-24 rounded-full overflow-hidden bg-gray-300 flex items-center justify-center text-xl font-semibold cursor-pointer relative"
+            >
+              {imagePreview ? (
+                <img
+                  src={imagePreview}
+                  alt="avatar"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                form.fullname?.[0]?.toUpperCase() || "U"
+              )}
 
-              {loading && (
-                <div className="w-full bg-gray-200 h-2 mt-2">
-                  <div
-                    className="bg-indigo-600 h-2 transition-all"
-                    style={{ width: `${progress}%` }}
-                  ></div>
+              {imageLoading && (
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-xs">
+                  Uploading...
                 </div>
               )}
             </div>
+
+            {/* Hidden input */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="hidden"
+            />
+
+            <p className="text-xs text-gray-500">
+              Tap image to change profile picture
+            </p>
           </div>
         </div>
 
-        {/* FORM SECTION */}
+        {/* FORM */}
         <form
-          onSubmit={fakeSubmit}
-          className="bg-white border border-gray-200 p-5 space-y-4 md:rounded-2xl rounded-none"
+          onSubmit={handleSubmit}
+          className="bg-white border border-gray-200 p-5 space-y-4 md:rounded-2xl"
         >
-
-          <FormInput icon={User} label="Full Name" name="name" value={form.name} onChange={handleChange} />
-          <FormInput icon={Mail} label="Email" name="email" value={form.email} onChange={handleChange} />
+          <FormInput icon={User} label="Full Name" name="fullname" value={form.fullname} onChange={handleChange} />
           <FormInput icon={Phone} label="Phone" name="phone" value={form.phone} onChange={handleChange} />
+          <FormInput icon={Home} label="Room No" name="roomNo" value={form.roomNo} onChange={handleChange} />
+          <FormInput icon={User} label="College" name="college" value={form.college} onChange={handleChange} />
+          <FormInput icon={User} label="Course" name="course" value={form.course} onChange={handleChange} />
+          <FormInput icon={User} label="Year" name="year" value={form.year} onChange={handleChange} />
           <FormInput icon={MapPin} label="Address" name="address" value={form.address} onChange={handleChange} />
-          <FormInput icon={Home} label="Room" name="room" value={form.room} onChange={handleChange} />
-          <FormInput icon={Home} label="Block" name="block" value={form.block} onChange={handleChange} />
-          <FormInput icon={CreditCard} label="Mess Plan" name="messPlan" value={form.messPlan} onChange={handleChange} />
-          <FormInput icon={CreditCard} label="Fee Status" name="feeStatus" value={form.feeStatus} onChange={handleChange} />
+          <FormInput icon={Phone} label="Emergency Contact" name="emergencyContact" value={form.emergencyContact} onChange={handleChange} />
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
@@ -99,15 +195,13 @@ export default function EditProfile() {
           >
             {loading ? "Updating..." : "Save Changes"}
           </button>
-
         </form>
-
       </div>
     </div>
   );
 }
 
-/* REUSABLE INPUT */
+/* 🔁 Input */
 function FormInput({ icon: Icon, label, name, value, onChange }) {
   return (
     <div className="flex flex-col">
@@ -117,7 +211,7 @@ function FormInput({ icon: Icon, label, name, value, onChange }) {
         <input
           type="text"
           name={name}
-          value={value}
+          value={value || ""}
           onChange={onChange}
           className="w-full text-sm outline-none bg-transparent"
         />

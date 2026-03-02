@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Mail, Lock } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import authApi from "../../apis/auth.api";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -19,42 +20,45 @@ export default function Login() {
     });
   };
 
-  const handleLogin = (e) => {
+  const navigate = useNavigate();
+  const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    setTimeout(() => {
+    try {
+      const res = await authApi.loginApi(formData);
+      console.log(res.data.message);
+      navigate("/profile");
+    } catch (error) {
+      console.log(`Error on Login : ${error}`);
+      // console.log(error.response.data);
+    } finally {
       setLoading(false);
-      alert("Login Successful");
-      console.log(formData);
-    }, 2000);
+    }
   };
 
   const handleGoogleLogin = () => {
     setGoogleLoading(true);
-    setTimeout(() => {
+
+    try {
+      authApi.googleLoginApi();
+    } catch (error) {
+      console.log(error);
+    } finally {
       setGoogleLoading(false);
-      alert("Google Login Successful");
-    }, 2000);
+    }
   };
 
   return (
     <div className="min-h-screen md:bg-[#f5f5f5] flex items-center justify-center ">
-
       <div className="w-full max-w-md bg-white md:shadow-sm  p-6">
-
         {/* Brand */}
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-semibold text-black">
-            Kaveri Living
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Student Hostel Login
-          </p>
+          <h1 className="text-2xl font-semibold text-black">Kaveri Living</h1>
+          <p className="text-sm text-gray-500 mt-1">Student Hostel Login</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">
-
           {/* Email */}
           <div className="relative">
             <Mail className="absolute left-0 top-3 text-gray-400" size={18} />
@@ -85,10 +89,7 @@ export default function Login() {
 
           {/* Forgot Password */}
           <div className="text-right">
-            <a
-              href="/forgot-password"
-              className="text-sm text-gray-600"
-            >
+            <a href="/forgot-password" className="text-sm text-gray-600">
               Forgot Password?
             </a>
           </div>
@@ -114,7 +115,7 @@ export default function Login() {
           </div>
 
           {/* Google Login */}
-           <button
+          <button
             type="button"
             onClick={handleGoogleLogin}
             className="w-full py-3 border border-gray-300 text-sm font-medium flex items-center justify-center gap-2"
@@ -124,10 +125,22 @@ export default function Login() {
             ) : (
               <>
                 <svg width="18" height="18" viewBox="0 0 48 48">
-                  <path fill="#EA4335" d="M24 9.5c3.54 0 6.69 1.22 9.19 3.6l6.86-6.86C35.91 2.18 30.35 0 24 0 14.63 0 6.63 5.48 2.64 13.44l8 6.21C12.67 13.34 17.83 9.5 24 9.5z"/>
-                  <path fill="#34A853" d="M46.5 24c0-1.64-.15-3.21-.43-4.71H24v9h12.68c-.55 2.96-2.22 5.47-4.73 7.15l7.26 5.64C43.96 36.73 46.5 30.88 46.5 24z"/>
-                  <path fill="#4A90E2" d="M10.64 28.65c-1.09-3.22-1.09-6.73 0-9.95l-8-6.21C.86 16.13 0 19.96 0 24s.86 7.87 2.64 11.51l8-6.86z"/>
-                  <path fill="#FBBC05" d="M24 48c6.35 0 11.91-2.09 15.88-5.68l-7.26-5.64c-2.02 1.35-4.6 2.14-8.62 2.14-6.17 0-11.33-3.84-13.36-9.15l-8 6.21C6.63 42.52 14.63 48 24 48z"/>
+                  <path
+                    fill="#EA4335"
+                    d="M24 9.5c3.54 0 6.69 1.22 9.19 3.6l6.86-6.86C35.91 2.18 30.35 0 24 0 14.63 0 6.63 5.48 2.64 13.44l8 6.21C12.67 13.34 17.83 9.5 24 9.5z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M46.5 24c0-1.64-.15-3.21-.43-4.71H24v9h12.68c-.55 2.96-2.22 5.47-4.73 7.15l7.26 5.64C43.96 36.73 46.5 30.88 46.5 24z"
+                  />
+                  <path
+                    fill="#4A90E2"
+                    d="M10.64 28.65c-1.09-3.22-1.09-6.73 0-9.95l-8-6.21C.86 16.13 0 19.96 0 24s.86 7.87 2.64 11.51l8-6.86z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M24 48c6.35 0 11.91-2.09 15.88-5.68l-7.26-5.64c-2.02 1.35-4.6 2.14-8.62 2.14-6.17 0-11.33-3.84-13.36-9.15l-8 6.21C6.63 42.52 14.63 48 24 48z"
+                  />
                 </svg>
                 Continue with Google
               </>
@@ -141,13 +154,11 @@ export default function Login() {
               Register
             </NavLink>
           </div>
-
         </form>
 
         <div className="mt-6 text-center text-xs text-gray-400">
           © 2026 Kaveri Living
         </div>
-
       </div>
     </div>
   );

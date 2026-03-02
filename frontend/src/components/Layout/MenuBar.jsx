@@ -13,8 +13,11 @@ import {
   LogOut,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import UseAuth from "../../context/auth/UseAuth";
 
 export default function StudentSidebar() {
+
+  const {logout} = UseAuth()
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
     { name: "Room Details", icon: Bed, path: "/room" },
@@ -92,7 +95,7 @@ export default function StudentSidebar() {
           </div>
         </div>
 
-        <button className="flex items-center gap-3 w-full px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition">
+        <button onClick={logout} className="flex items-center gap-3 w-full px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition">
           <LogOut size={18} />
           Logout
         </button>

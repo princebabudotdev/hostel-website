@@ -69,7 +69,7 @@ const updateProfileServiceAvatar = async (userId, file) => {
     user.avatar = result.url;
   }
 
-  await user.save;
+  await user.save();
   user.password = undefined;
   return user;
 };
