@@ -13,7 +13,8 @@
     "format": "prettier --write .",
     "prepare": "test \"$NODE_ENV\" != \"production\" && husky install || exit 0",
     "start": "NODE_ENV=production node server.js",
-    "test": "jest --detectOpenHandles"
+    "test": "jest --detectOpenHandles",
+    "seed:admin":"node scripts/createAdmin.js"
   },
   "dependencies": {
     "@imagekit/javascript": "^5.2.1",

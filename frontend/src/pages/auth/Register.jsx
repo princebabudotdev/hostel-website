@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { User, Mail, Phone, Lock } from "lucide-react";
-import { Link, Navigate, NavLink } from "react-router-dom";
+import { Link, Navigate, NavLink, useNavigate } from "react-router-dom";
 import authApi from "../../apis/auth.api";
 import UseAuth from "../../context/auth/UseAuth";
 
@@ -14,7 +14,7 @@ export default function Register() {
     password: "",
   });
 
-  const navigate = Navigate();
+  const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({

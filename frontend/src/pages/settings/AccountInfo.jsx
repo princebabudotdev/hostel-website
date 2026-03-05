@@ -1,8 +1,13 @@
 import { Mail, Phone, MapPin, User, Calendar } from "lucide-react";
+import UseAuth from "../../context/auth/UseAuth";
 
 export default function AccountInfo() {
+
+  const {user} = UseAuth() ;
+  
   return (
     <div className="min-h-screen bg-[#f3f4f6]">
+
 
       {/* HEADER */}
       <div className="bg-white px-5 py-4">
@@ -41,8 +46,8 @@ export default function AccountInfo() {
             </p>
 
             <div className="mt-6 grid grid-cols-2 gap-y-4 text-sm text-gray-700">
-              <InfoBlock label="Hostel ID" value="KAV-2026-0045" />
-              <InfoBlock label="Room No" value="B-203" />
+              <InfoBlock label="Hostel ID" value={user?.userId} />
+              <InfoBlock label="Room No" value={user?.roomNo} />
               <InfoBlock label="Hostel" value="Kaveri Boys Hostel" />
               <InfoBlock label="Valid Till" value="Dec 2026" />
             </div>
@@ -53,11 +58,11 @@ export default function AccountInfo() {
         {/* ================= ACCOUNT DETAILS ================= */}
         <div className="bg-white md:rounded-3xl md:shadow-md">
 
-          <InfoRow icon={User} label="Full Name" value="Rasyid Ridho" />
-          <InfoRow icon={Mail} label="Email" value="rasyid@example.com" />
-          <InfoRow icon={Phone} label="Phone" value="+91 9876543210" />
+          <InfoRow icon={User} label="Full Name" value={user?.fullname} />
+          <InfoRow icon={Mail} label="Email" value={user?.email} />
+          <InfoRow icon={Phone} label="Phone" value={user?.phone}/>
           <InfoRow icon={MapPin} label="Address" value="Kaveri Hostel Block B" />
-          <InfoRow icon={Calendar} label="Joined On" value="12 Jan 2026" />
+          <InfoRow icon={Calendar} label="Joined On" value={user?.createdAT || "04 March 2026"} />
 
         </div>
 
