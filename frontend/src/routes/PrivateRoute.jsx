@@ -1,17 +1,21 @@
-import React from 'react'
-import { Navigate } from 'react-router-dom';
-import UseAuth from '../context/auth/UseAuth';
+import React from "react";
+import { Navigate } from "react-router-dom";
+import UseAuth from "../context/auth/UseAuth";
 
 const PrivateRoute = ({ children }) => {
-    const {isAuthenticated} = UseAuth(); // Replace with actual authentication logic
+  const { isAuthenticated, user } = UseAuth();
+  const isUser = user?.role === "user";
+  // console.log(isUser);
 
-    if (!isAuthenticated) {
-        // If the user is not authenticated, redirect to the login page or public route
-        return <Navigate to="/auth/login" replace />;
-    }
+  if (!isAuthenticated) {
+    return <Navigate to="/auth/login" replace />;
+  }
 
-    return children;
+  if (!isUser) {
+    return <Navigate to="/admin" replace />;
+  }
 
-}
+  return children;
+};
 
-export default PrivateRoute
+export default PrivateRoute;

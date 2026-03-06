@@ -17,6 +17,8 @@ import HelpSupport from "../pages/settings/HelpSupport";
 import DeleteAccount from "../pages/settings/DeleteAccount";
 import Home from "../pages/Home/Home";
 import MessMenu from "../components/hostel/MessMenu";
+import AdminLayout from "../App/AdminLayout";
+import AdminRoute from "./AdminRoute";
 
 export const router = createBrowserRouter([
   /* ---------------- AUTH ROUTES ---------------- */
@@ -51,9 +53,23 @@ export const router = createBrowserRouter([
     ],
   },
 
+  // admin routes here
+  {
+    path: "/admin",
+    element: <AdminLayout />,
+    children: [
+      {
+        index: true,
+        element: (
+          <AdminRoute>
+            <div>This is a admin pannel</div>
+          </AdminRoute>
+        ),
+      },
+    ],
+  },
 
   // public home route
-
 
   /* ---------------- APP ROUTES ---------------- */
   {
@@ -61,26 +77,23 @@ export const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       {
-        index: true,   // this replaces path: "/"
-        element: (
-         <Home/>
-        ),
+        index: true, // this replaces path: "/"
+        element: <Home />,
       },
       {
         path: "mess-menu",
-        element:<MessMenu/>
+        element: <MessMenu />,
       },
       {
         path: "profile",
-        element:(
+        element: (
           <PrivateRoute>
-            <StudentProfile/>
+            <StudentProfile />
           </PrivateRoute>
-        )
-      }
+        ),
+      },
     ],
   },
-
 
   // setting nested routes for dashboard
   {
@@ -90,8 +103,8 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: (
-         <PrivateRoute>
-            <SettingsPage/>
+          <PrivateRoute>
+            <SettingsPage />
           </PrivateRoute>
         ),
       },
@@ -127,7 +140,7 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-        {
+      {
         path: "help-support",
         element: (
           <PrivateRoute>
@@ -135,7 +148,7 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-        {
+      {
         path: "delete-account",
         element: (
           <PrivateRoute>
@@ -143,8 +156,7 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-      
-    ]
+    ],
   },
 
   /* ---------------- 404 ---------------- */
