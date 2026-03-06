@@ -38,7 +38,6 @@ const getUser = asyncHandler(async (req, res) => {
   });
 });
 
-
 const getAllUsers = asyncHandler(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
@@ -53,8 +52,53 @@ const getAllUsers = asyncHandler(async (req, res) => {
   });
 });
 
+/*
+ * block user
+ * unblock user
+ */
+
+const blockUser = asyncHandler(async (req, res) => {
+  const user = await adminService.blockUserService(req.params.userId, req.user._id);
+
+  return res.status(200).json({
+     success: true,
+    message: `User ${user.fullname} (${user.email}) blocked successfully`,
+  });
+});
+
+const unBlockUser = asyncHandler(async (req, res) => {
+  const user = await adminService.UnblockUserService(req.params.userId, req.user._id);
+  return res.status(200).json({
+     success: true,
+    message: `User ${user.fullname} (${user.email}) Unblocked successfully`,
+  });
+});
+
+/* 
+ * suspend account
+ * inactive account
+*/
+
+const suspendedAccount = asyncHandler(async (req , res) => {
+  const user = await adminService.suspendedAccountService(req.params.userId , req.user._id);
+
+  return res.status(200).json({
+    success:true,
+    message:`User Account ${user.fullname} ${user.status} .`
+  })
+
+})
+
+const inActiveAccount = asyncHandler(async (req , res) => {
+
+})
+
 export default {
   changeRole,
   getUser,
   getAllUsers,
+  blockUser,
+  unBlockUser,
+  suspendedAccount,
+  inActiveAccount
 };

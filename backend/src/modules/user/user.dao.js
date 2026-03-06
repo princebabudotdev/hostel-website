@@ -15,6 +15,10 @@ const getPaginatedUsers = async (page = 1, limit = 10) => {
   return { data, total };
 };
 
+const getSuspended = async () => {
+  
+}
+
 export default {
   findById,
   getPaginatedUsers,

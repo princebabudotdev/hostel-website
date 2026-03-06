@@ -45,4 +45,41 @@ router
     adminController.getAllUsers
   );
 
+/*
+ * block user
+ * unblock user
+ */
+
+router
+  .route('/users/:userId/block')
+  .patch(
+    adminLimter.blockUserLimiter,
+    authMiddleware.authenticate,
+    authMiddleware.restrictTo('warden', 'admin'),
+    adminController.blockUser
+  );
+
+router
+  .route('/users/:userId/unblock')
+  .patch(
+    adminLimter.blockUserLimiter,
+    authMiddleware.authenticate,
+    authMiddleware.restrictTo('warden', 'admin'),
+    adminController.unBlockUser
+  );
+
+/*
+ * suspend account
+ * inactive account
+ */
+
+router
+  .route('/users/:userId/suspend')
+  .patch(
+    adminLimter.accountSuspend,
+    authMiddleware.authenticate,
+    authMiddleware.restrictTo('warden', 'admin'),
+    adminController.suspendedAccount
+  );
+
 export default router;

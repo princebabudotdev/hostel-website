@@ -70,8 +70,75 @@ const getAllPaginatedUsers = async (page = 1, limit = 10) => {
   };
 };
 
+const blockUserService = async (userId, loggedUserId) => {
+  const user = await userDao.findById(userId);
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+
+  if (loggedUserId.toString() === userId) {
+    throw new ApiError(403, 'You cannot block yourself');
+  }
+
+  if (user.isBlocked) {
+    throw new ApiError(400, 'User is already blocked');
+  }
+
+  user.isBlocked = true;
+  await user.save();
+  return user;
+};
+
+const UnblockUserService = async (userId, loggedUserId) => {
+  const user = await userDao.findById(userId);
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+
+  if (loggedUserId.toString() === userId) {
+    throw new ApiError(403, 'You cannot Unblock yourself');
+  }
+
+  if (!user.isBlocked) {
+    throw new ApiError(400, 'User is already Unblocked');
+  }
+
+  user.isBlocked = false;
+  await user.save();
+  return user;
+};
+
+const suspendedAccountService = async (userId, loggedUserId) => {
+  const user = await userDao.findById(userId);
+
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+
+  if (loggedUserId.toString() === userId) {
+    throw new ApiError(403, 'You cannot suspend yourself');
+  }
+
+  if (user.status === 'suspended') {
+    throw new ApiError(400, 'User is already Suspended');
+  }
+
+  user.status = 'suspended';
+  user.isBlocked = true;
+  await user.save();
+
+  return user;
+};
+
+const inActiveAccountService = async (userId, loggedUserId) => {};
+
 export default {
   changeRoleService,
   getUser,
   getAllPaginatedUsers,
+  blockUserService,
+  UnblockUserService,
+  inActiveAccountService,
+  suspendedAccountService,
+  inActiveAccountService,
 };
