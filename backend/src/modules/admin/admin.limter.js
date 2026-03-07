@@ -38,10 +38,10 @@ const blockUserLimiter = rateLimit({
   max: 20,
 
   keyGenerator: (req) => {
-    if (req.user && req.user._id) {
-      return req.user._id.toString();
+    if (req?.user && req?.user._id) {
+      return req?.user._id.toString();
     }
-    return req.ip;
+    return req?.ip;
   },
 
   standardHeaders: true,

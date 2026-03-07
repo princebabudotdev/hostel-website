@@ -4,6 +4,12 @@ import userDao from '../user/user.dao.js';
 import adminController from './admin.controller.js';
 import adminLimter from './admin.limter.js';
 import adminValidation from './admin.validation.js';
+import hostelController from '../hostel/controllers/hostel.controller.js';
+import hostelRoomValidation from '../hostel/validations/hostel.room.validation.js';
+import { validate } from '../../middleware/validate.middleware.js';
+import { validateHostelKeys } from '../../middleware/validateHostelKeys.js';
+import upload from '../../config/multer.config.js';
+import hostelRoomLimter from '../hostel/limters/hostel.room.limter.js';
 const router = express.Router();
 
 // chnage user role to admin by warden account .
@@ -11,7 +17,7 @@ router
   .route('/change/role/:userId')
   .patch(
     adminLimter.changeRoleLimiter,
-    adminValidation.validateUserIdParam,
+    validate(adminValidation.validateUserIdParam),
     authMiddleware.authenticate,
     authMiddleware.restrictTo('warden'),
     adminController.changeRole
@@ -28,7 +34,7 @@ router
   .route('/users/:userId')
   .get(
     adminLimter.changeRoleLimiter,
-    adminValidation.validateUserIdParam,
+    validate(adminValidation.validateUserIdParam),
     authMiddleware.authenticate,
     authMiddleware.restrictTo('admin', 'warden'),
     adminController.getUser
@@ -81,5 +87,47 @@ router
     authMiddleware.restrictTo('warden', 'admin'),
     adminController.suspendedAccount
   );
+
+/* 
+  * create hostel
+  * update hostel => only warden can do this
+  *  update hostel i => only warden can do this
+  * delete hsotel images
+  ! RORMS 
+  * create room 
+  * update room 
+  * assign student to room 
+  * re-assign student to room 
+  * delete room 
+  */
+
+router
+  .route('/create/hostel')
+  .post(
+    hostelRoomLimter.createHostelLimiter,
+    validateHostelKeys,
+    validate(hostelRoomValidation.createHostelValidation),
+    authMiddleware.authenticate,
+    authMiddleware.restrictTo('warden'),
+    hostelController.createHostel
+  );
+
+router
+  .route('/update/hostel')
+  .patch(
+    hostelRoomLimter.createHostelLimiter,
+    validateHostelKeys,
+    validate(hostelRoomValidation.updateHostelValidation),
+    authMiddleware.authenticate,
+    authMiddleware.restrictTo('warden', 'admin'),
+    hostelController.updateHostel
+  );
+
+router.route('/update/hostel/images').patch(
+  authMiddleware.authenticate,
+  authMiddleware.restrictTo('warden', 'admin'),
+  upload.array('images', 5), // maxium 2 images only upload at a time
+  hostelController.updateHostelImages
+);
 
 export default router;
