@@ -19,6 +19,18 @@ import Home from "../pages/Home/Home";
 import MessMenu from "../components/hostel/MessMenu";
 import AdminLayout from "../App/AdminLayout";
 import AdminRoute from "./AdminRoute";
+import HostelDetails from "../admin/pages/Dashboard";
+import ASettings from "../admin/pages/settings/ASettings";
+import HostelData from "../admin/pages/settings/HostelData";
+import EditHostel from "../admin/pages/settings/EditHostel";
+import QueriesPage from "../admin/pages/dashboard/Quaries";
+import Users from "../admin/pages/dashboard/Users";
+import RoomConfiguration from "../admin/pages/settings/RoomConfiguration";
+import Tiffins from "../admin/pages/settings/Tiffins";
+import TiffinEntries from "../admin/pages/settings/TiffinEntries";
+import SecurityPageAdmin from "../admin/pages/settings/Sequrity";
+import NotificationsSettings from "../admin/pages/settings/Notifications";
+import Rooms from "../admin/pages/dashboard/Rooms";
 
 export const router = createBrowserRouter([
   /* ---------------- AUTH ROUTES ---------------- */
@@ -60,9 +72,98 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
+
         element: (
           <AdminRoute>
-            <div>This is a admin pannel</div>
+            <HostelDetails />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "settings",
+        element: (
+          <AdminRoute>
+            <ASettings />
+          </AdminRoute>
+        ),
+      },
+       {
+        path: "settings/hostel-info",
+        element: (
+          <AdminRoute>
+            <HostelData />
+          </AdminRoute>
+        ),
+      },
+       {
+        path: "settings/edit-hostel",
+        element: (
+          <AdminRoute>
+            <EditHostel />
+          </AdminRoute>
+        ),
+      },
+       {
+        path: "queries",
+        element: (
+          <AdminRoute>
+            <QueriesPage />
+          </AdminRoute>
+        ),
+      },
+       {
+        path: "users",
+        element: (
+          <AdminRoute>
+            <Users />
+          </AdminRoute>
+        ),
+      },
+       {
+        path: "settings/rooms",
+        element: (
+          <AdminRoute>
+            <RoomConfiguration />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "settings/mess",
+        element: (
+          <AdminRoute>
+            <Tiffins />
+          </AdminRoute>
+        ),
+      },
+       {
+        path: "tiffin",
+        element: (
+          <AdminRoute>
+            <TiffinEntries />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "settings/security",
+        element: (
+          <AdminRoute>
+            <SecurityPageAdmin />
+          </AdminRoute>
+        ),
+      },
+       {
+        path: "settings/notifications",
+        element: (
+          <AdminRoute>
+            <NotificationsSettings />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "rooms",
+        element: (
+          <AdminRoute>
+            <Rooms />
           </AdminRoute>
         ),
       },

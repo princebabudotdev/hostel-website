@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import AuthContext from "./AuthContext";
 import axiosInstance from "../../config/axios..config";
 import Loader from "../../components/loader/loader";
+import { useLocation } from "react-router-dom";
 
 const AuthProvider = ({ children }) => {
   const [user, setuser] = useState(null);
@@ -36,6 +37,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     getUser();
   }, []);
+
 
   const value = {
     user,
