@@ -88,6 +88,15 @@ router
     adminController.suspendedAccount
   );
 
+  router
+  .route('/users/:userId/active')
+  .patch(
+    adminLimter.accountSuspend,
+    authMiddleware.authenticate,
+    authMiddleware.restrictTo('warden', 'admin'),
+    adminController.ActiveAccount
+  );
+
 /* 
   * create hostel
   * update hostel => only warden can do this

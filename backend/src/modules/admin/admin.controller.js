@@ -61,7 +61,7 @@ const blockUser = asyncHandler(async (req, res) => {
   const user = await adminService.blockUserService(req.params.userId, req.user._id);
 
   return res.status(200).json({
-     success: true,
+    success: true,
     message: `User ${user.fullname} (${user.email}) blocked successfully`,
   });
 });
@@ -69,29 +69,33 @@ const blockUser = asyncHandler(async (req, res) => {
 const unBlockUser = asyncHandler(async (req, res) => {
   const user = await adminService.UnblockUserService(req.params.userId, req.user._id);
   return res.status(200).json({
-     success: true,
+    success: true,
     message: `User ${user.fullname} (${user.email}) Unblocked successfully`,
   });
 });
 
-/* 
+/*
  * suspend account
  * inactive account
-*/
+ */
 
-const suspendedAccount = asyncHandler(async (req , res) => {
-  const user = await adminService.suspendedAccountService(req.params.userId , req.user._id);
+const suspendedAccount = asyncHandler(async (req, res) => {
+  const user = await adminService.suspendedAccountService(req.params.userId, req.user._id);
 
   return res.status(200).json({
-    success:true,
-    message:`User Account ${user.fullname} ${user.status} .`
-  })
+    success: true,
+    message: `User Account ${user.fullname} ${user.status} .`,
+  });
+});
 
-})
+const ActiveAccount = asyncHandler(async (req, res) => {
+  const user = await adminService.ActiveAccountService(req.params.userId, req.user._id);
 
-const inActiveAccount = asyncHandler(async (req , res) => {
-
-})
+  return res.status(200).json({
+    success: true,
+    message: `User Account ${user.fullname} ${user.status} .`,
+  });
+});
 
 export default {
   changeRole,
@@ -100,5 +104,5 @@ export default {
   blockUser,
   unBlockUser,
   suspendedAccount,
-  inActiveAccount
+  ActiveAccount,
 };

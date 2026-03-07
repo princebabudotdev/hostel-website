@@ -130,7 +130,27 @@ const suspendedAccountService = async (userId, loggedUserId) => {
   return user;
 };
 
-const inActiveAccountService = async (userId, loggedUserId) => {};
+const ActiveAccountService = async (userId, loggedUserId) => {
+  const user = await userDao.findById(userId);
+
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+
+  if (loggedUserId.toString() === userId) {
+    throw new ApiError(403, 'You cannot suspend yourself');
+  }
+
+  if (user.status === 'active') {
+    throw new ApiError(400, 'User is already active');
+  }
+
+  user.status = 'active';
+  // user.isBlocked = false;
+  await user.save();
+
+  return user;
+};
 
 export default {
   changeRoleService,
@@ -138,7 +158,6 @@ export default {
   getAllPaginatedUsers,
   blockUserService,
   UnblockUserService,
-  inActiveAccountService,
   suspendedAccountService,
-  inActiveAccountService,
+  ActiveAccountService,
 };

@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import StudentSidebar from "../admin/components/Menubar";
 import MobileMenuBar from "../admin/components/PAMenu";
 import MobileHeader from "../admin/components/Back";
+import ScrollToTop from "../admin/components/ScrollTop";
 
 const AppLayout = () => {
 
@@ -12,7 +13,7 @@ const AppLayout = () => {
   return (
     <div className="flex min-h-screen w-full bg-white text-gray-900">
       {/* SIDEBAR DESKTOP */}
-
+     
       <div className="hidden md:flex fixed top-0 left-0 h-full w-72 bg-white border-r border-gray-200 z-40">
         <StudentSidebar />
       </div>
