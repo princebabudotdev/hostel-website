@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Mail, Lock } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import authApi from "../../apis/auth.api";
+import { useToast } from "../../context/ToastContext";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const { showToast } = useToast();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -27,11 +29,11 @@ export default function Login() {
 
     try {
       const res = await authApi.loginApi(formData);
-      console.log(res.data.message);
-      navigate("/profile");
+      showToast(res, showToast);
+     await navigate("/profile");
+     window.location.reload();
     } catch (error) {
-      console.log(`Error on Login : ${error}`);
-      // console.log(error.response.data);
+      showToast(error, showToast);
     } finally {
       setLoading(false);
     }

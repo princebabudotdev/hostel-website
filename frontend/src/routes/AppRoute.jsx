@@ -31,6 +31,7 @@ import TiffinEntries from "../admin/pages/settings/TiffinEntries";
 import SecurityPageAdmin from "../admin/pages/settings/Sequrity";
 import NotificationsSettings from "../admin/pages/settings/Notifications";
 import Rooms from "../admin/pages/dashboard/Rooms";
+import AdmissionQuery from "../pages/query/Query";
 
 export const router = createBrowserRouter([
   /* ---------------- AUTH ROUTES ---------------- */
@@ -184,6 +185,10 @@ export const router = createBrowserRouter([
       {
         path: "mess-menu",
         element: <MessMenu />,
+      },
+       {
+        path: "query",
+        element: <AdmissionQuery />,
       },
       {
         path: "profile",

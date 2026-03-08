@@ -13,14 +13,19 @@ import {
 
 import { useEffect, useState } from "react";
 import MobileHeader from "../../components/Back";
-import Index from "../../apis";
+
 import Loader from "../../components/Loader";
+import ScrollToTop from "../../components/ScrollTop";
+import { useToast } from "../../../context/ToastContext";
+import Index from "../../apis/Index";
+
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loader, setloader] = useState(true);
+  const { showToast } = useToast();
 
   const getUsers = async () => {
     setloader(true);
@@ -36,74 +41,103 @@ export default function UsersPage() {
     }
   };
 
-    const suspendUser = async (id) => {
+  const suspendUser = async (id) => {
     try {
-     const res =  await Index.suspendUser(id)
-     console.log(res.data.message);
-    } catch (error) {
-      console.log(error.response.data.message);
-    }
-  }
+      const res = await Index.suspendUser(id);
+      showToast({
+        type: "success",
+        message: res?.data?.message,
+      });
 
-   const ActiveUser = async (id) => {
-    try {
-     const res =  await Index.ActiveUser(id)
-      console.log(res.data.message);
+      setUsers((prevUsers) =>
+        prevUsers.map((u) =>
+          u._id === id ? { ...u, status: "suspended" } : u,
+        ),
+      );
     } catch (error) {
-      console.log(error.response.data.message);
+      console.log(error.response?.data?.message);
+      showToast({
+        type: "error",
+        message: error.response?.data?.message,
+      });
     }
-  }
+  };
+
+  const ActiveUser = async (id) => {
+    try {
+      const res = await Index.ActiveUser(id);
+      showToast({
+        type: "success",
+        message: res?.data?.message,
+      });
+
+      setUsers((prevUsers) =>
+        prevUsers.map((u) => (u._id === id ? { ...u, status: "active" } : u)),
+      );
+    } catch (error) {
+      showToast({
+        type: "error",
+        message: error.response?.data?.message,
+      });
+    }
+  };
 
   useEffect(() => {
     getUsers();
   }, [page]);
-
-
 
   if (loader) {
     return <Loader />;
   }
 
   return (
-    <div className="bg-[#f4f6f9] min-h-screen">
-      <MobileHeader title="Hostel Users" />
+    <>
+      <ScrollToTop />
+      <div className="bg-[#f4f6f9] min-h-screen">
+        <MobileHeader title="Hostel Users" />
 
-      <div className="max-w-3xl mx-auto py-4 space-y-4">
-        {users.map((user) => (
-          <UserCard key={user._id} user={user} suspendUser={suspendUser} ActiveUser={ActiveUser}/>
-        ))}
+        <div className="max-w-3xl mx-auto py-4 space-y-4">
+          {users.map((user) => (
+            <UserCard
+              key={user._id}
+              user={user}
+              suspendUser={suspendUser}
+              ActiveUser={ActiveUser}
+            />
+          ))}
 
-        {/* PAGINATION */}
+          {/* PAGINATION */}
 
-        <div className="flex justify-center items-center gap-3 pt-6">
-          <button
-            disabled={page === 1}
-            onClick={() => setPage(page - 1)}
-            className="px-3 py-1 text-sm bg-white border rounded disabled:opacity-40"
-          >
-            Previous
-          </button>
+          <div className="flex justify-center items-center gap-3 pt-6">
+            <button
+              disabled={page === 1}
+              onClick={() => setPage(page - 1)}
+              className="px-3 py-1 text-sm bg-white border rounded disabled:opacity-40"
+            >
+              Previous
+            </button>
 
-          <span className="text-sm text-gray-600">
-            Page {page} of {totalPages}
-          </span>
+            <span className="text-sm text-gray-600">
+              Page {page} of {totalPages}
+            </span>
 
-          <button
-            disabled={page === totalPages}
-            onClick={() => setPage(page + 1)}
-            className="px-3 py-1 text-sm bg-black text-white rounded disabled:opacity-40"
-          >
-            Next
-          </button>
+            <button
+              disabled={page === totalPages}
+              onClick={() => setPage(page + 1)}
+              className="px-3 py-1 text-sm bg-black text-white rounded disabled:opacity-40"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
 /* USER CARD */
 
-function UserCard({ user , suspendUser , ActiveUser }) {
+function UserCard({ user, suspendUser, ActiveUser }) {
   const whatsappLink = `https://wa.me/${user?.phone?.replace(/\D/g, "")}`;
   const callLink = `tel:${user?.phone}`;
 
@@ -179,9 +213,17 @@ function UserCard({ user , suspendUser , ActiveUser }) {
         <ActionBtn icon={Edit} label="Edit" />
 
         {user?.status === "suspended" ? (
-          <ActionBtn onClick={()=> ActiveUser(user?._id)} icon={User} label="Activate" />
+          <ActionBtn
+            onClick={() => ActiveUser(user?._id)}
+            icon={User}
+            label="Activate"
+          />
         ) : (
-          <ActionBtn onClick={()=> suspendUser(user?._id)} icon={UserX} label="Suspend" />
+          <ActionBtn
+            onClick={() => suspendUser(user?._id)}
+            icon={UserX}
+            label="Suspend"
+          />
         )}
 
         {user.status !== "blocked" && <ActionBtn icon={Ban} label="Block" />}
@@ -218,10 +260,10 @@ function StatusBadge({ status }) {
 
 /* ACTION BUTTON */
 
-function ActionBtn({ icon: Icon, label, danger , onClick}) {
+function ActionBtn({ icon: Icon, label, danger, onClick }) {
   return (
     <button
-    onClick={onClick}
+      onClick={onClick}
       className={`flex items-center gap-1 text-xs px-2 py-1 rounded-md
       ${
         danger

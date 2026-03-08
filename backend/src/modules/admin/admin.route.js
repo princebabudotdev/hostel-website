@@ -10,6 +10,7 @@ import { validate } from '../../middleware/validate.middleware.js';
 import { validateHostelKeys } from '../../middleware/validateHostelKeys.js';
 import upload from '../../config/multer.config.js';
 import hostelRoomLimter from '../hostel/limters/hostel.room.limter.js';
+import queryController from '../hostel/controllers/query.controller.js';
 const router = express.Router();
 
 // chnage user role to admin by warden account .
@@ -88,7 +89,7 @@ router
     adminController.suspendedAccount
   );
 
-  router
+router
   .route('/users/:userId/active')
   .patch(
     adminLimter.accountSuspend,
@@ -138,5 +139,15 @@ router.route('/update/hostel/images').patch(
   upload.array('images', 5), // maxium 2 images only upload at a time
   hostelController.updateHostelImages
 );
+
+/* */
+
+router
+  .route('/all/quaries')
+  .get(
+    authMiddleware.authenticate,
+    authMiddleware.restrictTo('warden', 'admin'),
+    queryController.getAllQuaries
+  );
 
 export default router;

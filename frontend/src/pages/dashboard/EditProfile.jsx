@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import axiosInstance from "../../config/axios..config";
 import { User, Phone, MapPin, Home } from "lucide-react";
 import UseAuth from "../../context/auth/UseAuth";
+import { useToast } from "../../context/ToastContext";
+import { handleResponse } from "../../utils/apiHandler";
 
 export default function EditProfile() {
   const { user } = UseAuth();
@@ -15,7 +17,6 @@ export default function EditProfile() {
   const [form, setForm] = useState({
     fullname: "",
     phone: "",
-    roomNo: "",
     college: "",
     course: "",
     year: "",
@@ -29,7 +30,6 @@ export default function EditProfile() {
       setForm({
         fullname: user.fullname || "",
         phone: user.phone || "",
-        roomNo: user.roomNo || "",
         college: user.college || "",
         course: user.course || "",
         year: user.year || "",
@@ -76,20 +76,21 @@ export default function EditProfile() {
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
-        }
+        },
       );
 
       if (res.data?.avatar) {
         setImagePreview(res.data.avatar);
       }
-
+      handleResponse(res, showToast);
     } catch (err) {
-      console.error(err.response || err);
-      alert("Image upload failed ❌");
+      handleResponse(err, showToast);
     } finally {
       setImageLoading(false);
     }
   };
+
+  const { showToast } = useToast();
 
   // 🚀 Submit profile (only allowed fields)
   const handleSubmit = async (e) => {
@@ -101,7 +102,6 @@ export default function EditProfile() {
       const payload = {
         fullname: form.fullname,
         phone: form.phone,
-        roomNo: form.roomNo,
         college: form.college,
         course: form.course,
         year: form.year,
@@ -109,13 +109,10 @@ export default function EditProfile() {
         emergencyContact: form.emergencyContact,
       };
 
-      await axiosInstance.patch("/api/v1/user/update", payload);
-
-      alert("Profile updated ✅");
-
+      const res = await axiosInstance.patch("/api/v1/user/update", payload);
+      handleResponse(res, showToast);
     } catch (err) {
-      console.error(err.response.data || err);
-      alert("Update failed ❌");
+      handleResponse(err, showToast);
     } finally {
       setLoading(false);
     }
@@ -123,20 +120,17 @@ export default function EditProfile() {
 
   return (
     <div className="bg-[#f4f6f9] min-h-screen">
-
       {/* Header */}
       <div className="sticky top-0 bg-white border-b px-4 py-3 z-20">
         <h1 className="text-base font-semibold">Edit Profile</h1>
       </div>
 
       <div className="md:max-w-3xl md:mx-auto md:p-6 space-y-6">
-
         {/* PROFILE IMAGE */}
         <div className="bg-white border border-gray-200 p-5 md:rounded-2xl">
           <h2 className="text-sm font-semibold mb-4">Profile Picture</h2>
 
           <div className="flex flex-col md:flex-row items-center gap-5">
-
             {/* Avatar */}
             <div
               onClick={() => fileInputRef.current.click()}
@@ -179,14 +173,56 @@ export default function EditProfile() {
           onSubmit={handleSubmit}
           className="bg-white border border-gray-200 p-5 space-y-4 md:rounded-2xl"
         >
-          <FormInput icon={User} label="Full Name" name="fullname" value={form.fullname} onChange={handleChange} />
-          <FormInput icon={Phone} label="Phone" name="phone" value={form.phone} onChange={handleChange} />
-          <FormInput icon={Home} label="Room No" name="roomNo" value={form.roomNo} onChange={handleChange} />
-          <FormInput icon={User} label="College" name="college" value={form.college} onChange={handleChange} />
-          <FormInput icon={User} label="Course" name="course" value={form.course} onChange={handleChange} />
-          <FormInput icon={User} label="Year" name="year" value={form.year} onChange={handleChange} />
-          <FormInput icon={MapPin} label="Address" name="address" value={form.address} onChange={handleChange} />
-          <FormInput icon={Phone} label="Emergency Contact" name="emergencyContact" value={form.emergencyContact} onChange={handleChange} />
+          <FormInput
+            icon={User}
+            label="Full Name"
+            name="fullname"
+            value={form.fullname}
+            onChange={handleChange}
+          />
+          <FormInput
+            icon={Phone}
+            label="Phone"
+            name="phone"
+            value={form.phone}
+            onChange={handleChange}
+          />
+
+          <FormInput
+            icon={User}
+            label="College"
+            name="college"
+            value={form.college}
+            onChange={handleChange}
+          />
+          <FormInput
+            icon={User}
+            label="Course"
+            name="course"
+            value={form.course}
+            onChange={handleChange}
+          />
+          <FormInput
+            icon={User}
+            label="Year"
+            name="year"
+            value={form.year}
+            onChange={handleChange}
+          />
+          <FormInput
+            icon={MapPin}
+            label="Address"
+            name="address"
+            value={form.address}
+            onChange={handleChange}
+          />
+          <FormInput
+            icon={Phone}
+            label="Emergency Contact"
+            name="emergencyContact"
+            value={form.emergencyContact}
+            onChange={handleChange}
+          />
 
           <button
             type="submit"

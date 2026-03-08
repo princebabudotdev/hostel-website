@@ -5,21 +5,20 @@ import {
   MessageCircle,
   AlertTriangle,
   Clock,
+  Building2,
+  Wallet,
   PlusCircle,
-  Building2
+  Activity
 } from "lucide-react";
 
 export default function AdminDashboard() {
 
-  const stats = {
-    students: 45,
-    rooms: 30,
-    availableRooms: 6,
-    tiffins: 32,
-    queries: 5
-  };
-
-  const occupancy = 80;
+  const stats = [
+    { label: "Students", value: 45, icon: Users, color: "bg-blue-500" },
+    { label: "Total Rooms", value: 30, icon: Bed, color: "bg-purple-500" },
+    { label: "Available Rooms", value: 6, icon: Bed, color: "bg-green-500" },
+    { label: "Active Tiffins", value: 32, icon: UtensilsCrossed, color: "bg-orange-500" },
+  ];
 
   const alerts = [
     "2 students unpaid rent",
@@ -30,151 +29,209 @@ export default function AdminDashboard() {
   const activities = [
     "Rahul Sharma joined hostel",
     "Priya Verma received tiffin",
-    "Amit Kumar submitted query"
+    "Amit Kumar submitted query",
+    "Room B102 assigned to Akash"
   ];
 
+  const occupancy = 80;
+
   return (
-    <div className="bg-[#f4f6f9] min-h-screen">
+    <div className="bg-[#f6f8fb] min-h-screen">
 
       {/* HEADER */}
 
-      <div className="sticky top-0 bg-white border-b border-gray-300 px-4 py-3">
-        <h1 className="text-base font-semibold flex items-center gap-2">
-          <Building2 size={18}/>
+      <div className="sticky top-0 bg-white border-b px-5 py-4 flex items-center justify-between">
+
+        <h1 className="flex items-center gap-2 text-lg font-semibold">
+          <Building2 size={20}/>
           Hostel Dashboard
         </h1>
+
+        <button className="flex items-center gap-2 text-sm bg-black text-white px-3 py-2 rounded-lg">
+          <PlusCircle size={16}/>
+          Quick Action
+        </button>
+
       </div>
 
-      <div className="max-w-4xl mx-auto py-4 px-1 space-y-6">
+
+
+      <div className="max-w-6xl mx-auto p-5 space-y-6">
 
         {/* STATS */}
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
 
-          <StatCard icon={Users} label="Students" value={stats.students}/>
-          <StatCard icon={Bed} label="Rooms" value={stats.rooms}/>
-          <StatCard icon={Bed} label="Available" value={stats.availableRooms}/>
-          <StatCard icon={UtensilsCrossed} label="Tiffins" value={stats.tiffins}/>
+          {stats.map((s,i)=>(
+            <StatCard key={i} {...s}/>
+          ))}
 
         </div>
 
 
-        {/* OCCUPANCY */}
 
-        <div className="bg-white py-4 px-1 space-y-2">
+        {/* OCCUPANCY + REVENUE */}
 
-          <h2 className="text-sm font-semibold">
-            Room Occupancy
-          </h2>
+        <div className="grid md:grid-cols-2 gap-5">
 
-          <div className="w-full bg-gray-200 h-2 rounded">
+          <Card title="Room Occupancy">
 
+            <div className="space-y-3">
+
+              <div className="w-full bg-gray-200 h-2 rounded-full">
+
+                <div
+                  className="bg-indigo-600 h-2 rounded-full"
+                  style={{width:`${occupancy}%`}}
+                />
+
+              </div>
+
+              <p className="text-sm text-gray-500">
+                {occupancy}% of rooms occupied
+              </p>
+
+            </div>
+
+          </Card>
+
+
+
+          <Card title="Monthly Revenue">
+
+            <div className="flex items-center gap-3">
+
+              <div className="w-10 h-10 bg-green-100 text-green-600 rounded-lg flex items-center justify-center">
+                <Wallet size={18}/>
+              </div>
+
+              <div>
+                <p className="text-lg font-semibold">₹1,45,000</p>
+                <p className="text-xs text-gray-500">Fees collected this month</p>
+              </div>
+
+            </div>
+
+          </Card>
+
+        </div>
+
+
+
+        {/* TIFFIN + QUERIES */}
+
+        <div className="grid md:grid-cols-2 gap-5">
+
+          <Card title="Today's Tiffin">
+
+            <div className="space-y-2 text-sm">
+
+              <Row label="Total" value="32"/>
+
+              <Row label="Received" value="20" green/>
+
+              <Row label="Pending" value="12" red/>
+
+            </div>
+
+          </Card>
+
+
+
+          <Card title="Student Queries">
+
+            <div className="flex items-center gap-3">
+
+              <div className="w-10 h-10 bg-yellow-100 text-yellow-600 rounded-lg flex items-center justify-center">
+                <MessageCircle size={18}/>
+              </div>
+
+              <div>
+                <p className="text-lg font-semibold">5</p>
+                <p className="text-xs text-gray-500">Pending queries</p>
+              </div>
+
+            </div>
+
+          </Card>
+
+        </div>
+
+
+
+        {/* ALERTS */}
+
+        <Card title="Alerts">
+
+          {alerts.map((a,i)=>(
             <div
-              className="bg-black h-2 rounded"
-              style={{ width: `${occupancy}%` }}
-            />
+              key={i}
+              className="flex items-center gap-2 text-sm bg-red-50 text-red-600 px-3 py-2 rounded-lg mb-2"
+            >
+              <AlertTriangle size={14}/>
+              {a}
+            </div>
+          ))}
 
-          </div>
-
-          <p className="text-xs text-gray-500">
-            {occupancy}% rooms occupied
-          </p>
-
-        </div>
+        </Card>
 
 
-        {/* TODAY TIFFIN */}
 
-        <div className="bg-white py-4 px-1 space-y-2">
+        {/* RECENT ACTIVITY */}
 
-          <h2 className="text-sm font-semibold">
-            Today's Tiffins
-          </h2>
+        <Card title="Recent Activity">
 
-          <p className="text-sm text-gray-600">
-            Total: 32
-          </p>
+          {activities.map((a,i)=>(
+            <div
+              key={i}
+              className="flex items-center gap-3 text-sm py-2 border-b last:border-none"
+            >
 
-          <p className="text-sm text-gray-600">
-            Received: 20
-          </p>
+              <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                <Clock size={14}/>
+              </div>
 
-          <p className="text-sm text-gray-600">
-            Pending: 12
-          </p>
+              {a}
 
-        </div>
+            </div>
+          ))}
+
+        </Card>
+
 
 
         {/* QUICK ACTIONS */}
 
-        <div className="bg-white py-4 px-1 space-y-3">
+        <Card title="Quick Actions">
 
-          <h2 className="text-sm font-semibold">
-            Quick Actions
-          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
 
-          <div className="grid grid-cols-2 gap-2">
-
-            <ActionBtn label="Add User"/>
-            <ActionBtn label="Add Room"/>
+            <ActionBtn label="Add Student"/>
+            <ActionBtn label="Assign Room"/>
             <ActionBtn label="Add Tiffin"/>
             <ActionBtn label="Announcement"/>
 
           </div>
 
-        </div>
-
-
-        {/* ALERTS */}
-
-        <div className="bg-white py-4 px-1 space-y-3">
-
-          <h2 className="text-sm font-semibold flex items-center gap-2">
-            <AlertTriangle size={16}/>
-            Alerts
-          </h2>
-
-          {alerts.map((a,i)=>(
-            <div key={i} className="text-sm text-gray-700">
-              ⚠ {a}
-            </div>
-          ))}
-
-        </div>
-
-
-        {/* RECENT ACTIVITY */}
-
-        <div className="bg-white py-4 px-1 space-y-3">
-
-          <h2 className="text-sm font-semibold">
-            Recent Activity
-          </h2>
-
-          {activities.map((a,i)=>(
-            <div key={i} className="flex items-center gap-2 text-sm">
-              <Clock size={14}/>
-              {a}
-            </div>
-          ))}
-
-        </div>
+        </Card>
 
       </div>
+
     </div>
   );
 }
 
 
+
 /* STAT CARD */
 
-function StatCard({ icon:Icon,label,value }){
+function StatCard({icon:Icon,label,value,color}){
 
   return(
-    <div className="bg-white py-4 px-1 flex items-center gap-3">
 
-      <div className="w-10 h-10 bg-black text-white flex items-center justify-center rounded">
+    <div className="bg-white rounded-xl shadow-sm p-4 flex items-center gap-3">
+
+      <div className={`w-10 h-10 ${color} text-white rounded-lg flex items-center justify-center`}>
         <Icon size={18}/>
       </div>
 
@@ -184,8 +241,52 @@ function StatCard({ icon:Icon,label,value }){
       </div>
 
     </div>
+
   )
 }
+
+
+
+/* CARD */
+
+function Card({title,children}){
+
+  return(
+
+    <div className="bg-white rounded-xl shadow-sm p-5 space-y-3">
+
+      <h2 className="text-sm font-semibold">{title}</h2>
+
+      {children}
+
+    </div>
+
+  )
+
+}
+
+
+
+/* ROW */
+
+function Row({label,value,green,red}){
+
+  return(
+
+    <div className="flex justify-between">
+
+      <span className="text-gray-500">{label}</span>
+
+      <span className={`font-medium ${green ? "text-green-600":""} ${red ? "text-red-500":""}`}>
+        {value}
+      </span>
+
+    </div>
+
+  )
+
+}
+
 
 
 /* ACTION BUTTON */
@@ -193,12 +294,15 @@ function StatCard({ icon:Icon,label,value }){
 function ActionBtn({label}){
 
   return(
-    <button className="flex items-center justify-center gapy-4 px-1 text-sm bg-black text-white py-2 rounded">
+
+    <button className="flex items-center justify-center gap-2 bg-black text-white py-2 rounded-lg text-sm hover:opacity-90">
 
       <PlusCircle size={14}/>
 
       {label}
 
     </button>
+
   )
+
 }

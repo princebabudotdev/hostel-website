@@ -11,6 +11,7 @@ const getme = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
+    message: 'User Fetched sucessfully',
     user,
   });
 });
@@ -22,7 +23,9 @@ const updateProfile = asyncHandler(async (req, res) => {
     return res.status(404).json({ success: false, message: 'User not found' });
   }
 
-  res.status(200).json({ success: true, data: user });
+  res.status(200).json({ success: true, data: user ,
+    message:"User profile updated sucessfully"
+  });
 });
 
 const updateProfileAvatar = asyncHandler(async (req, res) => {

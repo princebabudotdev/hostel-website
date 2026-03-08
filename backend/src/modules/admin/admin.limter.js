@@ -57,7 +57,7 @@ const blockUserLimiter = rateLimit({
 
 const accountSuspend = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 10,
+  max: 100,
 
   standardHeaders: true,
   legacyHeaders: false,

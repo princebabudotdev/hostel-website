@@ -18,19 +18,13 @@ import UseAuth from "../../context/auth/UseAuth";
 export default function StudentSidebar() {
   const { logout, user } = UseAuth();
 
-  const menuItems = [
-    { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-    { name: "Room Details", icon: Bed, path: "/room" },
-    { name: "Fees & Payments", icon: CreditCard, path: "/fees" },
-    { name: "Payment History", icon: Receipt, path: "/payment-history" },
-    { name: "Mess Menu", icon: UtensilsCrossed, path: "/mess-menu" },
-    { name: "Maintenance", icon: Wrench, path: "/maintenance" },
-    { name: "Announcements", icon: Megaphone, path: "/announcements" },
-    { name: "Parcel / Courier", icon: Package, path: "/parcel" },
-    { name: "Visitors Log", icon: Users, path: "/visitors" },
-    { name: "Leave Request", icon: CalendarDays, path: "/leave" },
-    { name: "Settings", icon: Settings, path: "/settings" },
-  ];
+ const menuItems = [
+  { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
+  { name: "Rooms", icon: Bed, path: "/room" },
+  { name: "Tiffin", icon: UtensilsCrossed, path: "/tiffin" },
+  { name: "Mess Menu", icon: UtensilsCrossed, path: "/mess-menu" },
+  { name: "Settings", icon: Settings, path: "/settings" },
+];
 
   return (
     <div className="fixed top-0 left-0 h-screen w-72 bg-white border-r border-gray-200 z-40 flex flex-col">

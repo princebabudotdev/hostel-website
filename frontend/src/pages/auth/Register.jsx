@@ -3,9 +3,12 @@ import { User, Mail, Phone, Lock } from "lucide-react";
 import { Link, Navigate, NavLink, useNavigate } from "react-router-dom";
 import authApi from "../../apis/auth.api";
 import UseAuth from "../../context/auth/UseAuth";
+import { useToast } from "../../context/ToastContext";
+import { handleError, handleResponse } from "../../utils/apiHandler";
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
 
   const [formData, setFormData] = useState({
     fullname: "",
@@ -29,9 +32,10 @@ export default function Register() {
 
     try {
       const res = await authApi.registerApi(formData);
-      navigate("/profile")
+      handleResponse(res, showToast);
+      navigate("/profile");
     } catch (error) {
-      console.log(`Error on register : ${error}`);
+      handleError(error, showToast);
     } finally {
       setLoading(false);
     }

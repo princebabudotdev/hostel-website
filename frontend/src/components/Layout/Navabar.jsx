@@ -1,16 +1,15 @@
 import { Bell, User } from "lucide-react";
-import { useState } from "react";
+import { NavLink } from "react-router-dom";
+import UseAuth from "../../context/auth/UseAuth";
 
 export default function PremiumNavbar() {
-  const [active, setActive] = useState("Dashboard");
-
-  const links = ["Dashboard", "Rooms", "Tiffin", "Complaints", "Payments"];
+  const { user } = UseAuth();
 
   return (
-    <nav className="w-full px-2 lg:px-8  flex items-center justify-between md:px-0 border-gray-200">
+    <nav className="w-full  lg:px-8 flex items-center justify-between border-gray-200">
+      {/* BRAND */}
 
-      {/* 📱 Mobile Brand Section (Only Mobile) */}
-      <div className="flex items-center gap-3 lg:hidden">
+      <div className="flex items-center gap-3">
         <div className="w-9 h-9 bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
           KL
         </div>
@@ -25,47 +24,47 @@ export default function PremiumNavbar() {
         </div>
       </div>
 
-      {/* 💻 Desktop Nav Links */}
-      <div className="hidden lg:flex items-center gap-10">
-        {links.map((link) => (
-          <button
-            key={link}
-            onClick={() => setActive(link)}
-            className="relative group overflow-hidden"
-          >
-            <span
-              className={`block text-sm font-medium transition-all duration-300
-              ${active === link
-                  ? "text-indigo-600"
-                  : "text-gray-600 group-hover:text-indigo-600"
-                }
-              group-hover:-translate-y-6`}
+      {/* RIGHT SIDE */}
+
+      <div className="flex items-center gap-2">
+        {/* NOT LOGGED IN */}
+
+        {!user && (
+          <div className="flex items-center gap-2">
+            <NavLink
+              to="/auth/login"
+              className="text-sm px-3 py-1.5 text-gray-700 hover:text-indigo-600"
             >
-              {link}
-            </span>
+              Login
+            </NavLink>
 
-            <span className="absolute left-0 top-6 text-sm font-medium text-indigo-600 transition-all duration-300 group-hover:translate-y-[-24px]">
-              {link}
-            </span>
+            <NavLink
+              to="/auth/register"
+              className="text-sm px-4 py-1.5 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
+            >
+              Sign Up
+            </NavLink>
+          </div>
+        )}
 
-            <span
-              className={`absolute left-0 -bottom-1 h-[2px] bg-indigo-600 transition-all duration-300
-              ${active === link ? "w-full" : "w-0 group-hover:w-full"}`}
-            />
-          </button>
-        ))}
-      </div>
+        {/* LOGGED IN */}
 
-      {/* 🔔 Right Side Icons (Always Visible) */}
-      <div className="flex items-center gap-2 ml-auto">
-        <button className="relative p-2 text-gray-600 hover:text-indigo-600 transition-all duration-300 hover:scale-110">
-          <Bell size={20} />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-        </button>
+        {user && (
+          <>
+            <button className="relative p-2 text-gray-600 hover:text-indigo-600 transition hover:scale-110">
+              <Bell size={20} />
 
-        <button className="p-2 text-gray-600 hover:text-indigo-600 transition-all duration-300 hover:scale-110">
-          <User size={20} />
-        </button>
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+
+            <NavLink
+              to="/profile"
+              className="p-2 text-gray-600 hover:text-indigo-600 transition hover:scale-110"
+            >
+              <User size={20} />
+            </NavLink>
+          </>
+        )}
       </div>
     </nav>
   );

@@ -27,7 +27,6 @@ const updateProfileService = async (userId, userData) => {
   const allowedFields = [
     'fullname',
     'phone',
-    'roomNo',
     'college',
     'course',
     'year',

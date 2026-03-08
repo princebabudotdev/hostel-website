@@ -39,10 +39,13 @@ app.use(passport.initialize());
 import authRoutes from './modules/auth/auth.route.js';
 import userRoute from './modules/user/user.route.js';
 import adminRoute from './modules/admin/admin.route.js';
+import indexRoute from './routes/index.route.js';
+
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/user', userRoute);
 app.use('/api/v1/admin', adminRoute);
+app.use('/api/v1/index', indexRoute);
 
 // 404 route handler for undefined routes
 app.get('/', (req, res) => {
