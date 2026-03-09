@@ -62,7 +62,7 @@ const blockUser = asyncHandler(async (req, res) => {
 
   return res.status(200).json({
     success: true,
-    message: `User ${user.fullname} (${user.email}) blocked successfully`,
+    message: `User ${user.fullname} blocked successfully`,
   });
 });
 
@@ -70,7 +70,7 @@ const unBlockUser = asyncHandler(async (req, res) => {
   const user = await adminService.UnblockUserService(req.params.userId, req.user._id);
   return res.status(200).json({
     success: true,
-    message: `User ${user.fullname} (${user.email}) Unblocked successfully`,
+    message: `User ${user.fullname}  Unblocked successfully`,
   });
 });
 

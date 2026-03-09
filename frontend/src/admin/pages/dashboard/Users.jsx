@@ -9,6 +9,7 @@ import {
   Trash2,
   UserX,
   Mail,
+  UserCheck2Icon,
 } from "lucide-react";
 
 import { useEffect, useState } from "react";
@@ -18,7 +19,7 @@ import Loader from "../../components/Loader";
 import ScrollToTop from "../../components/ScrollTop";
 import { useToast } from "../../../context/ToastContext";
 import Index from "../../apis/Index";
-
+import EditUser from "../../components/layout/EditUser";
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
@@ -26,6 +27,8 @@ export default function UsersPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [loader, setloader] = useState(true);
   const { showToast } = useToast();
+
+  const [editingUser, setEditingUser] = useState(null);
 
   const getUsers = async () => {
     setloader(true);
@@ -82,6 +85,48 @@ export default function UsersPage() {
     }
   };
 
+  const blockUser = async (id) => {
+    try {
+      const res = await Index.blockUser(id);
+      showToast({
+        type: "success",
+        message: res?.data?.message,
+      });
+
+      setUsers((prevUsers) =>
+        prevUsers.map((u) =>
+          u._id === id ? { ...u, isBlocked: u?.isBlocked } : u,
+        ),
+      );
+    } catch (error) {
+      showToast({
+        type: "error",
+        message: error.response?.data?.message,
+      });
+    }
+  };
+
+  const unBlockUser = async (id) => {
+    try {
+      const res = await Index.unBlockUser(id);
+      showToast({
+        type: "success",
+        message: res?.data?.message,
+      });
+
+      setUsers((prevUsers) =>
+        prevUsers.map((u) =>
+          u._id === id ? { ...u, isBlocked: !u?.isBlocked } : u,
+        ),
+      );
+    } catch (error) {
+      showToast({
+        type: "error",
+        message: error.response?.data?.message,
+      });
+    }
+  };
+
   useEffect(() => {
     getUsers();
   }, [page]);
@@ -95,6 +140,17 @@ export default function UsersPage() {
       <ScrollToTop />
       <div className="bg-[#f4f6f9] min-h-screen">
         <MobileHeader title="Hostel Users" />
+        {editingUser && (
+          <EditUser
+            user={editingUser}
+            onClose={() => setEditingUser(null)}
+            onSave={(updatedData) => {
+              console.log(updatedData);
+
+              setEditingUser(null);
+            }}
+          />
+        )}
 
         <div className="max-w-3xl mx-auto py-4 space-y-4">
           {users.map((user) => (
@@ -103,6 +159,9 @@ export default function UsersPage() {
               user={user}
               suspendUser={suspendUser}
               ActiveUser={ActiveUser}
+              onEdit={setEditingUser}
+              blockUser={blockUser}
+              unBlockUser={unBlockUser}
             />
           ))}
 
@@ -137,7 +196,14 @@ export default function UsersPage() {
 
 /* USER CARD */
 
-function UserCard({ user, suspendUser, ActiveUser }) {
+function UserCard({
+  user,
+  suspendUser,
+  ActiveUser,
+  onEdit,
+  blockUser,
+  unBlockUser,
+}) {
   const whatsappLink = `https://wa.me/${user?.phone?.replace(/\D/g, "")}`;
   const callLink = `tel:${user?.phone}`;
 
@@ -210,7 +276,7 @@ function UserCard({ user, suspendUser, ActiveUser }) {
       {/* ADMIN ACTIONS */}
 
       <div className="flex flex-wrap gap-2 pt-2">
-        <ActionBtn icon={Edit} label="Edit" />
+        <ActionBtn icon={Edit} label="Edit" onClick={() => onEdit(user)} />
 
         {user?.status === "suspended" ? (
           <ActionBtn
@@ -226,7 +292,19 @@ function UserCard({ user, suspendUser, ActiveUser }) {
           />
         )}
 
-        {user.status !== "blocked" && <ActionBtn icon={Ban} label="Block" />}
+        {!user?.isBlocked ? (
+          <ActionBtn
+            onClick={() => blockUser(user?._id)}
+            icon={Ban}
+            label="Block"
+          />
+        ) : (
+          <ActionBtn
+            onClick={() => unBlockUser(user?._id)}
+            icon={UserCheck2Icon}
+            label="Unblock"
+          />
+        )}
 
         <ActionBtn icon={Trash2} label="Delete" danger />
       </div>

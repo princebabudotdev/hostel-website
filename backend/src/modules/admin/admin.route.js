@@ -11,6 +11,7 @@ import { validateHostelKeys } from '../../middleware/validateHostelKeys.js';
 import upload from '../../config/multer.config.js';
 import hostelRoomLimter from '../hostel/limters/hostel.room.limter.js';
 import queryController from '../hostel/controllers/query.controller.js';
+import roomController from '../hostel/controllers/room.controller.js';
 const router = express.Router();
 
 // chnage user role to admin by warden account .
@@ -148,6 +149,31 @@ router
     authMiddleware.authenticate,
     authMiddleware.restrictTo('warden', 'admin'),
     queryController.getAllQuaries
+  );
+
+/*
+ * Room create
+ * Room Update
+ */
+
+router
+  .route('/rooms/create')
+  .post(
+    hostelRoomLimter.createRoomLimiter,
+    validate(hostelRoomValidation.createRoomValidation),
+    authMiddleware.authenticate,
+    authMiddleware.restrictTo('warden', 'admin'),
+    roomController.createRoom
+  );
+
+router
+  .route('/rooms/:roomId/update')
+  .post(
+    hostelRoomLimter.createRoomLimiter,
+    validate(hostelRoomValidation.createRoomValidation),
+    authMiddleware.authenticate,
+    authMiddleware.restrictTo('warden', 'admin'),
+    roomController.updateRoom
   );
 
 export default router;

@@ -2,103 +2,54 @@ import mongoose from 'mongoose';
 
 const roomSchema = new mongoose.Schema(
   {
-    hostel: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Hostel',
-      required: true,
-    },
-
-    roomNumber: {
+    roomNo: {
       type: String,
       required: true,
+      unique: true,
       trim: true,
     },
 
-    floor: {
-      type: Number,
-      required: true,
-    },
-
-    roomType: {
+    type: {
       type: String,
-      enum: [
-        'single',
-        'double',
-        'triple',
-        'four_sharing',
-        'five_sharing',
-        'six_sharing',
-        'dormitory',
-      ],
-      required: true,
+      enum: ['single', 'double', 'triple', 'shared'],
+      default: 'shared',
     },
 
-    capacity: {
+    totalSeats: {
       type: Number,
       required: true,
+      min: 1,
+      max: 4,
     },
 
-    totalBeds: {
+    availableSeats: {
       type: Number,
-      required: true,
+      min: 0,
+      max:4,
     },
 
-    availableBeds: {
-      type: Number,
-      required: true,
-    },
-
-    pricePerMonth: {
-      type: Number,
-      required: true,
-    },
-
-    securityDeposit: {
-      type: Number,
-      default: 0,
-    },
-
-    description: {
-      type: String,
-      trim: true,
-    },
-
-    facilities: [
+    features: [
       {
         type: String,
       },
     ],
 
-    amenities: {
-      bed: { type: Boolean, default: true },
-      mattress: { type: Boolean, default: true },
-      cupboard: { type: Boolean, default: false },
-      studyTable: { type: Boolean, default: false },
-      chair: { type: Boolean, default: false },
-      fan: { type: Boolean, default: true },
-      ac: { type: Boolean, default: false },
-      attachedBathroom: { type: Boolean, default: false },
-      balcony: { type: Boolean, default: false },
-      wifi: { type: Boolean, default: false },
-    },
-
-    images: [
+    students: [
       {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
       },
     ],
 
-    isAvailable: {
-      type: Boolean,
-      default: true,
-    },
-
-    isActive: {
-      type: Boolean,
-      default: true,
+    status: {
+      type: String,
+      enum: ['active', 'maintenance'],
+      default: 'active',
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 const Room = mongoose.model('Room', roomSchema);

@@ -208,8 +208,35 @@ const updateHostelValidation = [
     .withMessage("isActive must be true or false")
 ];
 
+const createRoomValidation = [
+
+  body("roomNo")
+    .trim()
+    .notEmpty()
+    .withMessage("Room number is required")
+    .isLength({ min: 2, max: 4 })
+    .withMessage("Room number must be between 2 and 10 characters"),
+
+  body("type")
+    .optional()
+    .isIn(["single", "double", "triple", "shared"])
+    .withMessage("Invalid room type"),
+
+  body("totalSeats")
+    .notEmpty()
+    .withMessage("Total seats is required")
+    .isInt({ min: 1, max: 4 })
+    .withMessage("Seats must be between 1 and 6"),
+
+  body("features")
+    .optional()
+    .isArray()
+    .withMessage("Features must be an array"),
+
+];
 
 export default {
   createHostelValidation,
-  updateHostelValidation
+  updateHostelValidation,
+  createRoomValidation
 };

@@ -11,6 +11,23 @@ const createHostelLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+const createRoomLimiter = rateLimit({
+
+  windowMs: 5 * 60 * 1000, // 5 minutes
+
+  max: 10, // max 10 requests
+
+  message: {
+    success: false,
+    message: "Too many room creation attempts. Please try later.",
+  },
+
+  standardHeaders: true,
+  legacyHeaders: false,
+
+});
+
 export default {
   createHostelLimiter,
+  createRoomLimiter
 };

@@ -32,6 +32,7 @@ import SecurityPageAdmin from "../admin/pages/settings/Sequrity";
 import NotificationsSettings from "../admin/pages/settings/Notifications";
 import Rooms from "../admin/pages/dashboard/Rooms";
 import AdmissionQuery from "../pages/query/Query";
+import RoomsPage from "../admin/pages/dashboard/CreateRoom";
 
 export const router = createBrowserRouter([
   /* ---------------- AUTH ROUTES ---------------- */
@@ -165,6 +166,14 @@ export const router = createBrowserRouter([
         element: (
           <AdminRoute>
             <Rooms />
+          </AdminRoute>
+        ),
+      },
+       {
+        path: "create/room",
+        element: (
+          <AdminRoute>
+            <RoomsPage />
           </AdminRoute>
         ),
       },
