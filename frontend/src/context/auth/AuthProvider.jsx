@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import AuthContext from "./AuthContext";
 import axiosInstance from "../../config/axios..config";
-import Loader from '../../components/loader/Loader'
+import Loader from "../../components/loader/Loader";
 import { useToast } from "../ToastContext";
 import { handleError, handleResponse } from "../../utils/apiHandler";
 
@@ -40,11 +40,6 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     getUser();
   }, []);
-
-
-  console.log(import.meta.env.VITE_API_URL);
-
-
 
   const value = {
     user,

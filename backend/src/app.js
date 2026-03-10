@@ -14,8 +14,6 @@ const allowedOrigins =
     ? [config.FRONTEND_URL?.trim()]
     : ['http://localhost:5173', 'http://localhost:3000'];
 
-    console.log(allowedOrigins);
-
 // middlewares
 app.use(
   cors({
