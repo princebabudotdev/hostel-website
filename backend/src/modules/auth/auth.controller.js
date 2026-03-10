@@ -91,7 +91,7 @@ const googleCallback = asyncHandler(async (req, res) => {
     maxAge: tokenExpirySecs * 1000, // Convert to milliseconds for cookie maxAge
   });
 
-  res.redirect("http://localhost:5173/profile")
+  res.redirect(config.FRONTEND_URL);
 
   res.status(201).json({
     sucess: true,
