@@ -9,7 +9,7 @@ const loginApi = async (loginData) => {
 }
 
 const googleLoginApi = () => {
-  return window.location.href = `http://localhost:3000/api/v1/auth/google`
+  return window.location.href = `${import.meta.env.VITE_API_URL}/api/v1/auth/google`
 }
 
 
