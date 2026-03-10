@@ -5,15 +5,13 @@ import { useToast } from "../../../context/ToastContext";
 
 export default function EditUserModal({ user, onClose }) {
   const [roomNo, setRoomNo] = useState(user?.roomNo || "");
-  const [hostelName, setHostelName] = useState(user?.hostelName || "");
 
   const { showToast } = useToast();
 
   const handleSave = async () => {
     try {
-      const res = await Index.updateUser(user._id, {
+      const res = await Index.assignRoom(user._id, {
         roomNo,
-        hostelName,
       });
 
       showToast({
@@ -67,17 +65,6 @@ export default function EditUserModal({ user, onClose }) {
         </div>
 
         {/* HOSTEL NAME */}
-
-        <div className="space-y-1">
-          <p className="text-xs text-gray-500">Hostel</p>
-
-          <input
-            value={hostelName}
-            onChange={(e) => setHostelName(e.target.value)}
-            placeholder="Hostel name"
-            className="w-full border px-3 py-2 text-sm rounded focus:outline-none"
-          />
-        </div>
 
         {/* ACTIONS */}
 

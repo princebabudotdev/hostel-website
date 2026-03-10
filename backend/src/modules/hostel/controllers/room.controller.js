@@ -30,7 +30,17 @@ const updateRoom = asyncHandler(async (req, res) => {
   });
 });
 
+const assignStudentRoom = asyncHandler(async (req, res) => {
+  const assignS = await roomService.asignStudentRoomServic(req.body.roomNo, req.params.sId);
+
+  res.status(200).json({
+    success: true,
+    message: `Student is assign to Room ${assignS.roomNo}`,
+  });
+});
+
 export default {
   createRoom,
   updateRoom,
+  assignStudentRoom,
 };

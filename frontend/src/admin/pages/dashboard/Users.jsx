@@ -146,7 +146,11 @@ export default function UsersPage() {
             onClose={() => setEditingUser(null)}
             onSave={(updatedData) => {
               console.log(updatedData);
-
+              setUsers((prevUsers) =>
+                prevUsers.map((u) =>
+                  u._id === u ? { ...u, roomNo: u?.roomId?.roomNo } : u,
+                ),
+              );
               setEditingUser(null);
             }}
           />
@@ -238,7 +242,7 @@ function UserCard({
       <div className="flex flex-col gap-1 text-sm text-gray-600">
         <div className="flex items-center gap-2">
           <Home size={16} />
-          Room: {user?.roomNo || "N/A"}
+          Room: {user?.roomId?.roomNo || "N/A"}
         </div>
 
         <div className="flex items-center gap-2">

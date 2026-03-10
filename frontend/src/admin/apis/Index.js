@@ -26,6 +26,17 @@ const unBlockUser = async (id) => {
   return axiosInstance.patch(`api/v1/admin/users/${id}/unblock`);
 };
 
+const createRoom = async (data) => {
+  return await axiosInstance.post(`api/v1/admin/rooms/create`, data);
+};
+
+const assignRoom = async (id, roomNo) => {
+  return await axiosInstance.patch(
+    `api/v1/admin/rooms/assign/${id}/student`,
+    roomNo,
+  );
+};
+
 export default {
   getUsers,
   suspendUser,
@@ -33,4 +44,6 @@ export default {
   getQueries,
   blockUser,
   unBlockUser,
+  assignRoom,
+  createRoom,
 };

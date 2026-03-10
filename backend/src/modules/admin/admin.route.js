@@ -154,6 +154,7 @@ router
 /*
  * Room create
  * Room Update
+ * assignRoom
  */
 
 router
@@ -174,6 +175,14 @@ router
     authMiddleware.authenticate,
     authMiddleware.restrictTo('warden', 'admin'),
     roomController.updateRoom
+  );
+
+router
+  .route('/rooms/assign/:sId/student')
+  .patch(
+    authMiddleware.authenticate,
+    authMiddleware.restrictTo('warden', 'admin'),
+    roomController.assignStudentRoom
   );
 
 export default router;

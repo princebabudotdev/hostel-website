@@ -24,6 +24,7 @@ const config = {
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
   urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
+  FRONTEND_URL:process.env.FRONTEND_URL
 };
 
 export default config;

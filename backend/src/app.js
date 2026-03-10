@@ -9,13 +9,24 @@ const app = express();
 const httpServer = http.createServer(app);
 import morganLogger from './loggers/morgan.looger.js';
 
+const allowedOrigins =
+  config.NODE_ENV === 'production'
+    ? [config.FRONTEND_URL?.trim()]
+    : ['http://localhost:5173', 'http://localhost:3000'];
+
 // middlewares
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error('CORS not allowed'));
+    },
     credentials: true,
   })
 );
+
 app.use(morganLogger);
 app.use(
   express.json({
@@ -40,7 +51,6 @@ import authRoutes from './modules/auth/auth.route.js';
 import userRoute from './modules/user/user.route.js';
 import adminRoute from './modules/admin/admin.route.js';
 import indexRoute from './routes/index.route.js';
-
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/user', userRoute);
