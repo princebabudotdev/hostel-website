@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import AuthContext from "./AuthContext";
 import axiosInstance from "../../config/axios..config";
-import Loader from "../../components/loader/loader";
+import Loader from '../../components/loader/Loader'
 import { useToast } from "../ToastContext";
 import { handleError, handleResponse } from "../../utils/apiHandler";
 
