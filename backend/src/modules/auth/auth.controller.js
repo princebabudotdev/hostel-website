@@ -101,17 +101,23 @@ const googleCallback = asyncHandler(async (req, res) => {
   });
 });
 
-const logout = asyncHandler(async (req , res) => {
-  res.clearCookie("token");
+const logout = asyncHandler(async (req, res) => {
+  const cookieOptions = {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'None',
+  };
+
+  res.clearCookie('token', cookieOptions);
   res.status(200).json({
-    message:"Logout sucessfully"
-  })
-})
+    message: 'Logout sucessfully',
+  });
+});
 
 export default {
   register,
   login,
   forgotPassword,
   googleCallback,
-  logout
+  logout,
 };
