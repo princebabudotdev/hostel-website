@@ -18,13 +18,13 @@ import UseAuth from "../../context/auth/UseAuth";
 export default function StudentSidebar() {
   const { logout, user } = UseAuth();
 
- const menuItems = [
-  { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-  { name: "Rooms", icon: Bed, path: "/room" },
-  { name: "Tiffin", icon: UtensilsCrossed, path: "/tiffin" },
-  { name: "Mess Menu", icon: UtensilsCrossed, path: "/mess-menu" },
-  { name: "Settings", icon: Settings, path: "/settings" },
-];
+  const menuItems = [
+    { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
+    { name: "Rooms", icon: Bed, path: "/room" },
+    { name: "Tiffin", icon: UtensilsCrossed, path: "/tiffin" },
+    { name: "Mess Menu", icon: UtensilsCrossed, path: "/mess-menu" },
+    { name: "Settings", icon: Settings, path: "/settings" },
+  ];
 
   return (
     <div className="fixed top-0 left-0 h-screen w-72 bg-white border-r border-gray-200 z-40 flex flex-col">
@@ -89,7 +89,7 @@ export default function StudentSidebar() {
         </div>
 
         <button
-          onClick={logout}
+          onClick={async () => await logout}
           className="flex items-center gap-3 w-full px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition"
         >
           <LogOut size={18} />
