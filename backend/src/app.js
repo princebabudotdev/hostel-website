@@ -27,6 +27,7 @@ app.use(
   })
 );
 
+app.set('trust proxy', 1);
 app.use(morganLogger);
 app.use(
   express.json({
@@ -63,6 +64,13 @@ app.get('/', (req, res) => {
     status: 'sucess',
     message: 'Welcome to hostel managment system',
     environment: config.NODE_ENV,
+  });
+});
+
+app.get('/ip', (req, res) => {
+  res.json({
+    ip: req.ip,
+    forwarded: req.headers['x-forwarded-for'],
   });
 });
 
