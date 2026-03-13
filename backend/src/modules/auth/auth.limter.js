@@ -2,7 +2,7 @@ import { rateLimit } from 'express-rate-limit';
 
 const loginLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 5, // only 5 attempts
+  max: 15, // only 5 attempts
 
   standardHeaders: true,
   legacyHeaders: false,
@@ -17,7 +17,7 @@ const loginLimiter = rateLimit({
 
 const registerLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 10, // 10 accounts per hour
+  max: 15, // 10 accounts per hour
 
   standardHeaders: true,
   legacyHeaders: false,
